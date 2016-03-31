@@ -24,7 +24,7 @@ lines = [
 
 
 def getHorizontalSides(string=''):
-    horizontalSides = []
+    horizontalSides = {}
     if type(string) is str:
         lines = [s for s in string.split('\n') if s]
     else:
@@ -43,7 +43,10 @@ def getHorizontalSides(string=''):
                 else:
                     length += offset + 1
                     if len(set(s)) == 1 and '-' in s:
-                        horizontalSides.append([lineNum, offset, length])
+                        if horizontalSides.get(lineNum, 0):
+                            horizontalSides[lineNum].append([offset, length])
+                        else:
+                            horizontalSides[lineNum] = [[offset, length]]
                     offset = length
         lineNum += 1
     return horizontalSides
@@ -56,12 +59,19 @@ def checkVerticalSides(string=''):
 
     horizontalSides = getHorizontalSides(string)
 
-    horizontalNumLines = set([i for (i, start, end) in horizontalSides])
-
-    print horizontalNumLines
+    horizontalNumLines = set(horizontalSides.keys())
 
     verticalNumLines = set(range(len(lines))).difference(horizontalNumLines)
-    print verticalNumLines
+
+    for num in horizontalSides:
+        start = horizontalSides[num][0]
+        end = horizontalSides[num][1]
+        # if num:
+        #     if lines[num-1][start] == '|' and lines[num-1][end] == '|':
+
+    # for i in verticalNumLines:
+    #     upLine =
+    #     tmp =lines[i].split('|')
 
 checkVerticalSides(lines)
 
