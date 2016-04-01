@@ -6,30 +6,54 @@ lines = '''
 +-+--+
 '''
 
-lines = [
-    "  +-+",
-    "    |",
-    "+-+-+",
-    "| | -",
-    "+-+-+"
-]
+lines = ["+-+",
+         "| |",
+         "+-+",
+         ]
 
-lines = [
-    "  +-+",
-    "    |",
-    "+|+-+",
-    "| | -",
-    "+-+-+"
-]
+lines = ["  +-+",
+         "  | |",
+         "+-+-+",
+         "| |  ",
+         "+-+  "
+         ]
+
+lines = ["  +-+",
+         "  | |",
+         "+-+-+",
+         "| | |",
+         "+-+-+"
+         ]
+
+lines = ["  +-+",
+         "    |",
+         "+-+-+",
+         "| | -",
+         "+-+-+"
+         ]
+
+lines = ["+------+----+",
+         "|      |    |",
+         "+---+--+    |",
+         "|   |       |",
+         "+---+-------+"
+         ]
+
+lines = ["+------+----+",
+         "|      |    |",
+         "+------+    |",
+         "|   |       |",
+         "+---+-------+"
+         ]
 
 
-def getHorizontalSides(string=''):
-    horizontalSides = {}
+def get_horizontal_sides(string=''):
+    horizontal_sides = {}
     if type(string) is str:
         lines = [s for s in string.split('\n') if s]
     else:
         lines = string
-    lineNum = 0
+    line_num = 0
     for line in lines:
         tmp = line.split('+')
         if len(tmp) > 2:
@@ -43,37 +67,47 @@ def getHorizontalSides(string=''):
                 else:
                     length += offset + 1
                     if len(set(s)) == 1 and '-' in s:
-                        if horizontalSides.get(lineNum, 0):
-                            horizontalSides[lineNum].append([offset, length])
+                        if horizontal_sides.get(line_num, 0):
+                            horizontal_sides[line_num].append([offset, length])
                         else:
-                            horizontalSides[lineNum] = [[offset, length]]
+                            horizontal_sides[line_num] = [[offset, length]]
                     offset = length
-        lineNum += 1
-    return horizontalSides
+        line_num += 1
+    return horizontal_sides
 
-def checkVerticalSides(string=''):
+
+def check_vertical_sides(string=''):
+    count = 0
     if type(string) is str:
         lines = [s for s in string.split('\n') if s]
     else:
         lines = string
 
-    horizontalSides = getHorizontalSides(string)
+    horizontal_sides = get_horizontal_sides(string)
+    print horizontal_sides
 
-    horizontalNumLines = set(horizontalSides.keys())
+    horizontal_num_lines = set(horizontal_sides.keys())
 
-    verticalNumLines = set(range(len(lines))).difference(horizontalNumLines)
+    vertical_num_lines = set(range(len(lines))).difference(horizontal_num_lines)
 
-    for num in horizontalSides:
-        start = horizontalSides[num][0]
-        end = horizontalSides[num][1]
-        # if num:
-        #     if lines[num-1][start] == '|' and lines[num-1][end] == '|':
+    for num in horizontal_sides:
+        for side in horizontal_sides[num]:
+            start = side[0]
+            end = side[1]
+            if num:
+                if lines[num-1][start] in ('|','+') and lines[num-1][end] in ('|', '+'):
+                    count += 1
+            else:
+                if lines[num+1][start] in ('|','+') and lines[num+1][end] in ('|', '+'):
+                    count += 1
 
-    # for i in verticalNumLines:
-    #     upLine =
-    #     tmp =lines[i].split('|')
+    return count
+            # for i in vertical_num_lines:
+            #     upLine =
+            #     tmp =lines[i].split('|')
 
-checkVerticalSides(lines)
+
+print check_vertical_sides(lines)
 
 # def count(string=''):
 #     count = 0
