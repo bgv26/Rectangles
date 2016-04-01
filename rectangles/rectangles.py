@@ -6,39 +6,39 @@ lines = '''
 +-+--+
 '''
 
-lines = ["+-+",
-         "| |",
-         "+-+",
-         ]
-
-lines = ["  +-+",
-         "  | |",
-         "+-+-+",
-         "| |  ",
-         "+-+  "
-         ]
-
-lines = ["  +-+",
-         "  | |",
-         "+-+-+",
-         "| | |",
-         "+-+-+"
-         ]
-
-lines = ["  +-+",
-         "    |",
-         "+-+-+",
-         "| | -",
-         "+-+-+"
-         ]
-
-lines = ["+------+----+",
-         "|      |    |",
-         "+---+--+    |",
-         "|   |       |",
-         "+---+-------+"
-         ]
-
+# lines = ["+-+",
+#          "| |",
+#          "+-+",
+#          ]
+#
+# lines = ["  +-+",
+#          "  | |",
+#          "+-+-+",
+#          "| |  ",
+#          "+-+  "
+#          ]
+#
+# lines = ["  +-+",
+#          "  | |",
+#          "+-+-+",
+#          "| | |",
+#          "+-+-+"
+#          ]
+#
+# lines = ["  +-+",
+#          "    |",
+#          "+-+-+",
+#          "| | -",
+#          "+-+-+"
+#          ]
+#
+# lines = ["+------+----+",
+#          "|      |    |",
+#          "+---+--+    |",
+#          "|   |       |",
+#          "+---+-------+"
+#          ]
+#
 lines = ["+------+----+",
          "|      |    |",
          "+------+    |",
@@ -48,7 +48,7 @@ lines = ["+------+----+",
 
 
 def get_horizontal_sides(string=''):
-    horizontal_sides = {}
+    rectangles = []
     if type(string) is str:
         lines = [s for s in string.split('\n') if s]
     else:
@@ -67,101 +67,45 @@ def get_horizontal_sides(string=''):
                 else:
                     length += offset + 1
                     if len(set(s)) == 1 and '-' in s:
-                        if horizontal_sides.get(line_num, 0):
-                            horizontal_sides[line_num].append([offset, length])
-                        else:
-                            horizontal_sides[line_num] = [[offset, length]]
+                        down_side = get_rectangle(lines, line_num, offset, length)
+                        if down_side:
+                            rectangles.append((line_num, offset, length, down_side))
                     offset = length
         line_num += 1
-    return horizontal_sides
+    return rectangles
 
 
-def check_vertical_sides(string=''):
-    count = 0
+def get_rectangle(lines, line_num, start, end):
+    if line_num < len(lines) - 1:
+        line_num += 1
+    else:
+        return 0
+    while True:
+        left_side = lines[line_num][start]
+        right_side = lines[line_num][end]
+        if  left_side == '|' and right_side == '|':
+            if line_num < len(lines) - 1:
+                line_num += 1
+            else:
+                return 0
+        elif left_side == '+' and right_side == '+':
+            return line_num
+        else:
+            return 0
+
+print get_horizontal_sides(lines)
+
+def get_side(string = ''):
     if type(string) is str:
         lines = [s for s in string.split('\n') if s]
     else:
         lines = string
+    for line in lines:
+        left = line.find('+')
+        if left >= 0:
+            left += 1
+            while line[left] == '-':
+                left += 1
+#                 регулярочка "\+(\-+)(?=\+)"
 
-    horizontal_sides = get_horizontal_sides(string)
-    print horizontal_sides
-
-    horizontal_num_lines = set(horizontal_sides.keys())
-
-    vertical_num_lines = set(range(len(lines))).difference(horizontal_num_lines)
-
-    for num in horizontal_sides:
-        for side in horizontal_sides[num]:
-            start = side[0]
-            end = side[1]
-            if num:
-                if lines[num-1][start] in ('|','+') and lines[num-1][end] in ('|', '+'):
-                    count += 1
-            else:
-                if lines[num+1][start] in ('|','+') and lines[num+1][end] in ('|', '+'):
-                    count += 1
-
-    return count
-            # for i in vertical_num_lines:
-            #     upLine =
-            #     tmp =lines[i].split('|')
-
-
-print check_vertical_sides(lines)
-
-# def count(string=''):
-#     count = 0
-#     if type(string) is str:
-#         lines = [s for s in string.split('\n') if s]
-#     else:
-#         lines = string
-#     rows = {'+': [], '|': []}
-#     lineNum = 0
-#     for line in lines:
-#         cornersInRow = [lineNum, ]
-#         sidesInRow = [lineNum, ]
-#         index = 0
-#         sides = set()
-#         corners = set()
-#         for c in line:
-#             if c == '+':
-#                 corners.add(index)
-#             elif c == '|':
-#                 sides.add(index)
-#             index += 1
-#
-#         if corners:
-#             cornersInRow.append(corners)
-#             rows['+'].append(cornersInRow)
-#         if sides:
-#             sidesInRow.append(sides)
-#             rows['|'].append(sidesInRow)
-#
-#         lineNum += 1
-#
-#         # if len(row) > 1:
-#         #     tmp = row.copy()
-#         #     for i in tmp:
-#         #         if line[i] not in ('+', '|'):
-#         #             row.remove(i)
-#         #     count += len(row) * (len(row) - 1) / 2
-#         # else:
-#         #     index = 0
-#         #     row = set()
-#         #     for c in line:
-#         #         if c == '+':
-#         #             row.add(index)
-#         #         index += 1
-#
-#     print rows
-#     # rows = len(sides)
-#
-#     # for i in xrange(rows):
-#     #     for j in xrange(i, rows):
-#     #         if
-#
-#     return count
-#
-#
-# print count(lines)
-# # print set([0, 2, 4]).difference(set([2, 4]))
+print get_side(lines)
